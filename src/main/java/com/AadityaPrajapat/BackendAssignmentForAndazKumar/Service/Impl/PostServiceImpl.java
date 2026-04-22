@@ -4,10 +4,13 @@ import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostRequestDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostResponseDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Post;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Repository.PostRepository;
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.PostService;
 import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class PostServiceImpl {
+@Service
+public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostRepository postRepository;
