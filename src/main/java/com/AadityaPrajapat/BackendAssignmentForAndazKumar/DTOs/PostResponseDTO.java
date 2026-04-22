@@ -16,4 +16,6 @@ public class PostResponseDTO {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
+    private Long authorId;
+    private String authorType;
 }
