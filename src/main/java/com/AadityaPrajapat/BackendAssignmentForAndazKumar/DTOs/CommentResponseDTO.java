@@ -17,5 +17,5 @@ public class CommentResponseDTO {
     private Long id;
     private String content;
     private LocalDateTime createdAt;
-    private int depthLevel;
+    private Integer depthLevel;
 }

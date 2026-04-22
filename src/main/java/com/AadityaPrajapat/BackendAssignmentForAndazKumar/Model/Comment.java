@@ -32,7 +32,7 @@ public class Comment {
     private AuthorType authorType;
 
     @Column(name = "depth_level")
-    private int depthLevel;
+    private Integer depthLevel;
 
 
     @Column(name = "created_at")

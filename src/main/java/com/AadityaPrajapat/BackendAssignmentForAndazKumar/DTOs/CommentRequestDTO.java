@@ -21,9 +21,9 @@ public class CommentRequestDTO {
     @NotNull(message = "AuthorId can't be null.")
     private Long authorId;
 
-    @NotBlank(message = "Author Type can't be blank.Specify Author Type(bot/human).")
+    @NotNull(message = "Author Type can't be blank.Specify Author Type(bot/human).")
     private AuthorType authorType;
 
     @NotNull(message = "Depth Level can't be null.(For new Comment Send : depthLevel=1)")
-    private int depthLevel;
+    private Integer depthLevel;
 }

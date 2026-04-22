@@ -18,9 +18,6 @@ public class CommentController {
 
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<?> addComment(@Valid @RequestBody CommentRequestDTO dto, @PathVariable Long postId){
-        if(dto.getDepthLevel()>20)
-            return new ResponseEntity<>("No more comment Allowed on this Post", HttpStatus.BAD_REQUEST);
-
         CommentResponseDTO responseDTO = commentService.addComment(dto, postId);
         return new ResponseEntity<>(responseDTO,HttpStatus.OK);
     }
