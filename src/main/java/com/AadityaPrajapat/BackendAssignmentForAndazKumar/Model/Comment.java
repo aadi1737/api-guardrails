@@ -1,10 +1,13 @@
 package com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model;
 
 import java.time.LocalDateTime;
+
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Enums.AuthorType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @Entity
@@ -25,14 +28,15 @@ public class Comment {
 
     private String content;
 
-    @Column(name = "author_type")
-    private String authorType;
+    @Enumerated(EnumType.STRING)
+    private AuthorType authorType;
 
     @Column(name = "depth_level")
     private int depthLevel;
 
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
 }
