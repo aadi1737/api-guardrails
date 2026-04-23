@@ -41,7 +41,6 @@ public class CommentServiceImpl implements CommentService {
             String horizontalKey = "post:" + postId + ":bot_count";
             Long incremented = redisService.increment(horizontalKey);
             if (incremented > 100) {
-                redisService.decreamentKey(horizontalKey);
                 throw new TooManyBotCommentsException("Too Many bot Comments on this Post!");
             }
 
