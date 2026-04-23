@@ -1,5 +1,7 @@
 package com.AadityaPrajapat.BackendAssignmentForAndazKumar.Controller;
 
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.LikeRequestDTO;
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.LikeResponseDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostRequestDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostResponseDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Post;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/posts")
 public class PostController {
 
     @Autowired
@@ -25,50 +27,28 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/health-check-post")
+    @GetMapping("/health-check")
     public String healthCheck(){
         return "Yes Everything is Working good in PostController";
     }
 
-    @PostMapping("/posts")
+    @PostMapping
     public ResponseEntity<?> addPost(@Valid @RequestBody PostRequestDTO postRequestDTO){
         //No need to check RequestBody cause @Valid
-
         PostResponseDTO responseDTO = postService.addPost(postRequestDTO);
         return ResponseEntity.ok(responseDTO);
     }
 
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<?> addLike(@Valid @RequestBody LikeRequestDTO dto,@PathVariable Long postId){
+        LikeResponseDTO likeResponseDTO = postService.likeAPost(dto, postId);
 
-    @GetMapping("/posts")
-    public ResponseEntity<List<PostResponseDTO>> getAllPosts(){
-        List<Post> postList = postRepository.findAll();
-        List<PostResponseDTO> responseDTOList = new ArrayList<>();
-        for(Post post:postList){
-            responseDTOList.add(mapPost(post));
-        }
-
-        return ResponseEntity.ok(responseDTOList);
+        return ResponseEntity.ok(likeResponseDTO);
     }
 
-    @GetMapping("/posts/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id){
-        Post post = postRepository.findById(id).orElse(null);
-        if (post == null){
-            return  new ResponseEntity<>("Invalid Post ID", HttpStatus.NOT_FOUND);
-        }else{
-            return new ResponseEntity<>(post,HttpStatus.OK);
-        }
-    }
 
-    public static PostResponseDTO mapPost(Post post){
-        return PostResponseDTO.builder()
-                .authorId(post.getAuthorId())
-                .content(post.getContent())
-                .id(post.getId())
-                .createdAt(post.getCreatedAt())
-                .authorType(post.getAuthorType())
-                .build();
-    }
+
+
 
 
 }

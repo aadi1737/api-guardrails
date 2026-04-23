@@ -30,4 +30,6 @@ public class Post {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(name = "like_count")
+    private int likeCount;
 }

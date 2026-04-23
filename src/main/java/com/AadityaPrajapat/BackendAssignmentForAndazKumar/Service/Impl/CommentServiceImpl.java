@@ -3,6 +3,7 @@ package com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.Impl;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.CommentRequestDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.CommentResponseDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Enums.AuthorType;
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Exception.CoolDownException;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Exception.TooManyBotCommentsException;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Comment;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Post;
@@ -44,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
             Optional<Post> postJi = postRepository.findById(postId);
             String cooldownKey = "cooldown:bot_"+dto.getAuthorId()+":human_"+postJi.get().getAuthorId();
             if(redisService.isExists(cooldownKey)){
-                throw new RuntimeException("You(bot) Can't Comment again in 10 minutes.");
+                throw new CoolDownException("You(bot) Can't Comment again in 10 minutes.");
             }else{
                 redisService.setWithTTL(cooldownKey,"1",900);
             }
