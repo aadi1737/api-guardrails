@@ -50,11 +50,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public LikeResponseDTO likeAPost(LikeRequestDTO dto, Long postId){
-        if(dto.getAuthorType()== AuthorType.HUMAN){
-            String key = "post:"+postId+":virality_score";
-            String s = redisService.get(key);
-            int current= (s==null)?0:Integer.parseInt(s);
-            redisService.set(key,String.valueOf(current+20));
+
+         if(dto.getAuthorType()== AuthorType.HUMAN){
+
+             // Duplicate like check
+             String likeKey = "like:user_" + dto.getAuthorId() + ":post_" + postId;
+             if(redisService.isExists(likeKey)) {
+                 throw new RuntimeException("You have already liked this post!");
+             }
+             redisService.set(likeKey, "1");
+
+             String key = "post:"+postId+":virality_score";
+             String s = redisService.get(key);
+             int current= (s==null)?0:Integer.parseInt(s);
+             redisService.set(key,String.valueOf(current+20));
         }else{
             throw new BotCanNotLikeException("A bot can not like a,Human Post(But you can comment!)");
         }

@@ -4,18 +4,12 @@ import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.LikeRequestDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.LikeResponseDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostRequestDTO;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.DTOs.PostResponseDTO;
-import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Post;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Repository.PostRepository;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.PostService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
