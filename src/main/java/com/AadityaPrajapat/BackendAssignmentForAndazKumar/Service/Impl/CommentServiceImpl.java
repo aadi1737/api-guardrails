@@ -10,10 +10,9 @@ import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Model.Post;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Repository.CommentRepository;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Repository.PostRepository;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.CommentService;
+import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.NotificationService;
 import com.AadityaPrajapat.BackendAssignmentForAndazKumar.Service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -30,9 +29,14 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public CommentResponseDTO addComment(CommentRequestDTO dto, Long postId) {
 
+        Post postJi = postRepository.findById(postId).orElseThrow(()->new RuntimeException("Post Not Found."));
+        Long postAuthorId =  postJi.getAuthorId();
         if("BOT".equalsIgnoreCase(String.valueOf(dto.getAuthorType()))) {
             String horizontalKey = "post:" + postId + ":bot_count";
             Long incremented = redisService.increment(horizontalKey);
@@ -42,12 +46,13 @@ public class CommentServiceImpl implements CommentService {
             }
 
 
-            Optional<Post> postJi = postRepository.findById(postId);
-            String cooldownKey = "cooldown:bot_"+dto.getAuthorId()+":human_"+postJi.get().getAuthorId();
+
+
+            String cooldownKey = "cooldown:bot_"+dto.getAuthorId()+":human_"+postAuthorId;
             if(redisService.isExists(cooldownKey)){
                 throw new CoolDownException("You(bot) Can't Comment again in 10 minutes.");
             }else{
-                redisService.setWithTTL(cooldownKey,"1",900);
+                redisService.setWithTTL(cooldownKey,"1",600);
             }
         }
 
@@ -64,11 +69,16 @@ public class CommentServiceImpl implements CommentService {
 
         Comment saved = commentRepository.save(comment);
 
+
         String s = redisService.get("post:" + postId + ":virality_score");
         int virality_score ;
         int current= (s==null)?0:Integer.parseInt(s) ;
         if (saved.getAuthorType()== AuthorType.BOT) {
                 virality_score = current + 1;
+                notificationService.handleBotNotification(
+                        postAuthorId,
+                        "Bot_"+dto.getAuthorId()
+                );
             } else {
                 virality_score = current + 50;
             }
